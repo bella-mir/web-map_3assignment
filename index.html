@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="language" content="en" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cities Erasmus Cartography M.Sc.</title>
+    <link
+      rel="stylesheet"
+      href="http://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+    />
+    <script src="http://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+
+    <link rel="stylesheet" href="index.css" />
+  </head>
+
+  <body class="root">
+    <div class="page">
+      <div class="header__wrapper">
+        <div class="header__section"></div>
+        <div class="header__section"></div>
+        <div class="header__section"></div>
+        <div class="header__section"></div>
+      </div>
+
+      <main class="page__content">
+        <section class="section__block">
+          <h1 class="lead__title">Cities - Erasmus Cartography M.Sc.</h1>
+        </section>
+
+        <section class="section__block">
+          <div class="map">
+            <div class="marker markerTUM"></div>
+            <div class="marker markerTUW"></div>
+            <div class="marker markerTUD"></div>
+            <div class="marker markerTwente"></div>
+            <div class="boundingBox"></div>
+          </div>
+
+          <ul class="legend">
+            <li class="legendRow">
+              <div class="legendElement legendTUM"></div>
+              <span>Technical University of Munich</span>
+            </li>
+            <li class="legendRow">
+              <div class="legendElement legendTUW"></div>
+              <span>Technical University of Vienna</span>
+            </li>
+            <li class="legendRow">
+              <div class="legendElement legendTUD"></div>
+              <span>Technical University of Dresden</span>
+            </li>
+            <li class="legendRow">
+              <div class="legendElement legendTwente"></div>
+              <span>University of Twente</span>
+            </li>
+            <span class="hint"
+              >Hover on markers on the map to see cities' names</span
+            >
+          </ul>
+        </section>
+        <section class="section__block">
+          <div id="mapLeaflet"></div>
+        </section>
+        <section class="section__block">
+          <div class="assignmentBox">
+            <div class="flexColumn">
+              <div class="assignmentSection">
+                <strong>Fisrt static map:</strong>
+                <ol>
+                  <li>
+                    Added ::before pseudoclass to show cities' names on marker
+                    hover
+                  </li>
+                </ol>
+              </div>
+              <div class="assignmentSection">
+                <strong>Second Leaflet Map: </strong>
+                <ol>
+                  <li>Added geojson objects to the map</li>
+                  <li>Changed Default Basemap to CartoDB Positron</li>
+                  <li>Added custom images as Leaflet Markers</li>
+                  <li>Added Layers Control</li>
+                </ol>
+              </div>
+              <div class="assignmentSection">
+                <strong>Other:</strong>
+                <ol>
+                  <li>Header styled in M.Sc. Carto Colors</li>
+                  <li>
+                    The page is deployed on gh-pages, you can access it
+                    <a
+                      href="https://bella-mir.github.io/tram-simple-map/"
+                      target="_blank"
+                      >here</a
+                    >
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </div>
+          <h2 class="assignmentTitle">Assignment Note (Extras)</h2>
+        </section>
+      </main>
+      <footer class="footer__wrapper">
+        <div class="footer">
+          <p class="footer__copyright">&copy;2024.Bella Mironova</p>
+        </div>
+      </footer>
+    </div>
+    <script>
+      const map = L.map("mapLeaflet").setView([50, 10], 5);
+
+      const iconTUM = L.icon({
+        iconUrl: "asserts/marker1.png",
+        iconSize: [20, 30],
+        iconAnchor: [10, 30],
+        popupAnchor: [0, -32],
+      });
+
+      const iconTUW = L.icon({
+        iconUrl: "asserts/marker2.png",
+        iconSize: [20, 30],
+        iconAnchor: [10, 30],
+        popupAnchor: [0, -32],
+      });
+
+      const iconTUD = L.icon({
+        iconUrl: "asserts/marker3.png",
+        iconSize: [20, 30],
+        iconAnchor: [10, 30],
+        popupAnchor: [0, -32],
+      });
+
+      const iconTwente = L.icon({
+        iconUrl: "asserts/marker4.png",
+        iconSize: [20, 30],
+        iconAnchor: [10, 30],
+        popupAnchor: [0, -32],
+      });
+
+      L.tileLayer(
+        "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+        {
+          attribution:
+            '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+        }
+      ).addTo(map);
+
+      const markerLayer = L.layerGroup([
+        L.marker([48.1351, 11.582], { icon: iconTUM }).bindPopup(
+          "Technical University of Munich"
+        ),
+        L.marker([48.2081, 16.3713], { icon: iconTUW }).bindPopup(
+          "Technical University of Vienna"
+        ),
+        L.marker([51.0504, 13.7373], { icon: iconTUD }).bindPopup(
+          "Technical University of Dresden"
+        ),
+        L.marker([52.2215, 6.8937], { icon: iconTwente }).bindPopup(
+          "University of Twente"
+        ),
+      ]).addTo(map);
+
+      const latlngs = [
+        [48.1351, 11.582],
+        [48.2081, 16.3713],
+        [51.0504, 13.7373],
+        [52.2215, 6.8937],
+      ];
+
+      const polygonLayer = L.polygon(latlngs, { color: "#f24194", weight: 1 })
+        .addTo(map)
+        .bindPopup("The Carto Area :)");
+
+      layerControl = L.control
+        .layers(null, { Cities: markerLayer, Area: polygonLayer })
+        .addTo(map);
+
+      fetch(
+        "https://raw.githubusercontent.com/bella-mir/web-map_3assignment/main/countries.geojson"
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          const geojsonLayer = L.geoJSON(data, {
+            style: { color: "#4179F2", weight: 1 },
+          })
+            .bindPopup(function (layer) {
+              return layer.feature.properties.SOVEREIGNT;
+            })
+            .addTo(map);
+
+          layerControl.addOverlay(geojsonLayer, "Countries");
+        })
+        .catch((error) => {
+          console.error("Error fetching GeoJSON:", error);
+        });
+    </script>
+  </body>
+</html>
